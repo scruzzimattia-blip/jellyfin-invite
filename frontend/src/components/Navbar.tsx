@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 export function Navbar() {
@@ -16,7 +16,27 @@ export function Navbar() {
         <Link to="/dashboard" className="text-lg font-semibold tracking-tight text-white">
           Jellyfin Invite
         </Link>
-        <div className="flex items-center gap-4">
+        <nav className="flex items-center gap-4">
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) =>
+              `text-sm font-medium transition ${
+                isActive ? "text-purple-200" : "text-slate-400 hover:text-white"
+              }`
+            }
+          >
+            Dashboard
+          </NavLink>
+          <NavLink
+            to="/invitations"
+            className={({ isActive }) =>
+              `text-sm font-medium transition ${
+                isActive ? "text-purple-200" : "text-slate-400 hover:text-white"
+              }`
+            }
+          >
+            Einladungen
+          </NavLink>
           <span className="text-sm text-slate-300">{user?.username}</span>
           <button
             type="button"
@@ -25,7 +45,7 @@ export function Navbar() {
           >
             Logout
           </button>
-        </div>
+        </nav>
       </div>
     </header>
   );

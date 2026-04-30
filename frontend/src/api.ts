@@ -16,11 +16,21 @@ export interface LoginResponse {
 export interface InvitationSummary {
   id: string;
   token: string;
+  createdBy: string;
   email?: string | null;
   expiresAt: string;
+  createdAt?: string;
   maxUses: number;
   useCount: number;
+  note?: string | null;
   revokedAt?: string | null;
+}
+
+export interface CreateInvitationPayload {
+  email?: string;
+  expiresInDays: number;
+  maxUses: number;
+  note?: string;
 }
 
 export const api = axios.create({
