@@ -1,0 +1,9 @@
+# Alle Änderungen brauchen Review vom Repo-Owner
+* @scruzzimattia-blip
+
+# Docker-Konfiguration
+Dockerfile* @scruzzimattia-blip
+docker-compose.yml @scruzzimattia-blip
+
+# CI/CD
+.github/workflows/ @scruzzimattia-blip
