@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: ${{ matrix.project }} checks
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project: backend
+            working-directory: backend
+            build_command: npm run build
+          - project: frontend
+            working-directory: frontend
+            build_command: npm run build
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.working-directory }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: ${{ matrix.working-directory }}/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        if: matrix.project == 'backend'
+        run: npm run prisma:generate
+
+      - name: TypeScript and build check
+        run: ${{ matrix.build_command }}
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test --if-present
