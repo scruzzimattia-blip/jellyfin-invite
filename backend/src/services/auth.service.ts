@@ -65,6 +65,40 @@ export async function isJellyfinAdmin(userId: string, accessToken: string): Prom
   return user.Policy.IsAdministrator;
 }
 
+export async function createUserInJellyfin(username: string, password?: string): Promise<string> {
+  const JELLYFIN_API_KEY = process.env.JELLYFIN_API_KEY ?? "";
+  if (!JELLYFIN_API_KEY) {
+    throw new AuthError("JELLYFIN_API_KEY is not configured", 500);
+  }
+
+  const response = await fetch(`${JELLYFIN_URL}/Users/New`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `MediaBrowser Token="${JELLYFIN_API_KEY}"`
+    },
+    body: JSON.stringify({ Name: username, Password: password })
+  });
+
+  if (!response.ok) {
+    let errorText = "";
+    try {
+      errorText = await response.text();
+    } catch {
+      // Ignoriere Fehler beim Lesen des Textes
+    }
+    
+    if (response.status === 400 && errorText.includes("already exists")) {
+      throw new AuthError("A user with this name already exists", 409);
+    }
+    
+    throw new AuthError(`Failed to create Jellyfin user (HTTP ${response.status})`, 502);
+  }
+
+  const data = (await response.json()) as { Id: string };
+  return data.Id;
+}
+
 export function createToken(payload: JwtPayload): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
 }
