@@ -7,9 +7,10 @@ updates:
       day: monday
       time: "04:00"
     open-pull-requests-limit: 5
+    labels:
+      - dependencies
     commit-message:
-      prefix: chore
-      include: scope
+      prefix: "chore(deps)"
 
   - package-ecosystem: npm
     directory: /frontend
@@ -18,17 +19,31 @@ updates:
       day: monday
       time: "04:30"
     open-pull-requests-limit: 5
+    labels:
+      - dependencies
     commit-message:
-      prefix: chore
-      include: scope
+      prefix: "chore(deps)"
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "05:00"
+    labels:
+      - dependencies
+    commit-message:
+      prefix: "chore(deps)"
 
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
       day: monday
-      time: "05:00"
+      time: "05:30"
     open-pull-requests-limit: 5
+    labels:
+      - ci
+      - dependencies
     commit-message:
-      prefix: ci
-      include: scope
+      prefix: "ci(deps)"
