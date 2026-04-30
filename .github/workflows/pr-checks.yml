@@ -27,9 +27,15 @@ jobs:
       - name: Validate commit messages
         run: |
           pattern='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-zA-Z0-9._-]+\))?!?: .+'
+          merge_pattern='^Merge '
           commits="$(git log --format=%s origin/${{ github.base_ref }}..HEAD)"
 
           while IFS= read -r subject; do
+            [ -z "$subject" ] && continue
+            if printf '%s\n' "$subject" | grep -Eq "$merge_pattern"; then
+              echo "Skipping merge commit: $subject"
+              continue
+            fi
             if ! printf '%s\n' "$subject" | grep -Eq "$pattern"; then
               echo "Invalid commit message: $subject"
               echo "Expected Conventional Commits format, for example: feat: add invitation email system"
