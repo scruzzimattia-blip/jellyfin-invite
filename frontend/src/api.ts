@@ -33,6 +33,19 @@ export interface CreateInvitationPayload {
   note?: string;
 }
 
+export interface InvitationValidationResponse {
+  valid: boolean;
+  email?: string | null;
+  expiresAt: string;
+  maxUses: number;
+  useCount: number;
+}
+
+export interface UseInvitationResponse {
+  success: boolean;
+  jellyfinUserId: string;
+}
+
 export const api = axios.create({
   baseURL: "/api"
 });
