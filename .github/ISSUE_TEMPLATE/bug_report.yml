@@ -1,0 +1,62 @@
+name: Bug Report
+description: Melde einen reproduzierbaren Fehler.
+title: "fix: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke fuer deinen Report. Bitte beschreibe den Fehler so konkret wie moeglich.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Zusammenfassung
+      description: Was ist passiert?
+      placeholder: Beim Einloesen einer Einladung tritt ein Fehler auf.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Schritte zur Reproduktion
+      description: Wie kann der Fehler nachvollzogen werden?
+      placeholder: |
+        1. Als Admin einloggen
+        2. Einladung erstellen
+        3. Link oeffnen
+        4. Fehler beobachten
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Erwartetes Verhalten
+      description: Was haette passieren sollen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Umgebung
+      description: Versionen und Deployment-Kontext
+      placeholder: |
+        - OS:
+        - Node.js:
+        - Docker:
+        - Jellyfin:
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs oder Screenshots
+      description: Fuege relevante Logs, Screenshots oder Fehlermeldungen hinzu.
+      render: shell
+    validations:
+      required: false

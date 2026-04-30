@@ -1,0 +1,43 @@
+name: Feature Request
+description: Schlage eine neue Funktion oder Verbesserung vor.
+title: "feat: "
+labels:
+  - feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke fuer deinen Vorschlag. Beschreibe bitte den Nutzen und den gewuenschten Ablauf.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem oder Bedarf
+      description: Welches Problem loest das Feature?
+      placeholder: Als Jellyfin-Admin moechte ich ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Vorgeschlagene Loesung
+      description: Wie sollte sich die Funktion verhalten?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativen
+      description: Welche Alternativen hast du betrachtet?
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Zusaetzlicher Kontext
+      description: Links, Mockups, Screenshots oder weitere Hinweise.
+    validations:
+      required: false
