@@ -11,6 +11,7 @@ import {
 } from "../services/invitation.service.js";
 import { createUserInJellyfin, AuthError } from "../services/auth.service.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
+import { sendInvitationEmail } from "../services/email.service.js";
 
 const prisma = new PrismaClient();
 const router = Router();
@@ -132,6 +133,19 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
       createdBy: user.id
     });
 
+    if (email) {
+      const inviteUrl = `${process.env.INVITE_BASE_URL ?? "http://localhost:5173"}/invite/${invitation.token}`;
+      await sendInvitationEmail({
+        to: email,
+        inviteUrl,
+        inviterName: user.username,
+        expiresAt: invitation.expiresAt,
+        note
+      }).catch(err => {
+        console.error("Failed to send invitation email:", err);
+      });
+    }
+
     res.json(invitation);
   } catch (err) {
     console.error("Create invitation error:", err);
@@ -156,6 +170,52 @@ router.delete("/:id", async (req: Request, res: Response): Promise<void> => {
       return;
     }
     console.error("Revoke invitation error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// POST /:id/resend - Resend invitation email
+router.post("/:id/resend", async (req: Request, res: Response): Promise<void> => {
+  try {
+    const id = req.params.id as string;
+    if (!id) {
+      res.status(400).json({ error: "ID is required" });
+      return;
+    }
+
+    const invitation = await prisma.invitation.findUnique({
+      where: { id },
+      include: { creator: true }
+    });
+
+    if (!invitation) {
+      res.status(404).json({ error: "Invitation not found" });
+      return;
+    }
+
+    if (!invitation.email) {
+      res.status(400).json({ error: "Invitation has no email address associated" });
+      return;
+    }
+
+    if (invitation.revokedAt) {
+      res.status(400).json({ error: "Cannot resend revoked invitation" });
+      return;
+    }
+
+    const inviteUrl = `${process.env.INVITE_BASE_URL ?? "http://localhost:5173"}/invite/${invitation.token}`;
+    
+    await sendInvitationEmail({
+      to: invitation.email,
+      inviteUrl,
+      inviterName: invitation.creator.username,
+      expiresAt: invitation.expiresAt,
+      note: invitation.note ?? undefined
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Resend invitation error:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
