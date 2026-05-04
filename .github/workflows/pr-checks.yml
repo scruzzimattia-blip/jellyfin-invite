@@ -50,7 +50,7 @@ jobs:
 
     steps:
       - name: Apply label from commit prefix
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const commits = await github.paginate(github.rest.pulls.listCommits, {
@@ -78,7 +78,7 @@ jobs:
             }
 
       - name: Post preview placeholder
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const marker = "<!-- jellyfin-invite-preview -->";
